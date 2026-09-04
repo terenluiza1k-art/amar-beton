@@ -1,39 +1,56 @@
 name: Build Android APK
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
-      - master
+    branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
 
-      - name: Create package.json if missing
-        run: |
-          if [ ! -f package.json ]; then
-            npm init -y
-          fi
+      - name: Install dependencies
+        run: npm install
 
-      - name: Install Capacitor and TypeScript
+      - name: Add Capacitor Android Platform
         run: |
-          npm install @capacitor/core@7.4.4 @capacitor/cli@7.4.4 @capacitor/android@7.4.4
-          npm install --save-dev typescript
+          npm install @capacitor/android
+          npx cap add android || true
 
-      - name: Prepare web assets
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Make Gradle executable
+        run: chmod +x android/gradlew
+
+      - name: Build Debug APK
         run: |
-          rm -rf dist
+          cd android
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
           mkdir -p dist
 
           cp index.html dist/
