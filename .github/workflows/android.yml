@@ -19,10 +19,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
-      - name: Install dependencies
-        run: npm install
+      - name: Create package.json if missing
+        run: |
+          if [ ! -f package.json ]; then
+            npm init -y
+          fi
+
+      - name: Install Capacitor
+        run: |
+          npm install @capacitor/core@7.4.4 @capacitor/cli@7.4.4 @capacitor/android@7.4.4
 
       - name: Prepare web assets
         run: |
@@ -55,8 +61,17 @@ jobs:
             cp -R assets dist/
           fi
 
-      - name: Install Capacitor CLI
-        run: npm install @capacitor/core@7.4.4 @capacitor/cli@7.4.4 @capacitor/android@7.4.4
+      - name: Create Capacitor config if missing
+        run: |
+          if [ ! -f capacitor.config.json ] && [ ! -f capacitor.config.ts ]; then
+            cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.amarbeton.app",
+            "appName": "Amar Beton",
+            "webDir": "dist"
+          }
+          EOF
+          fi
 
       - name: Add Android platform
         run: npx cap add android
