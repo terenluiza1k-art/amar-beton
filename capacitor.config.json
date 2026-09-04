@@ -1,0 +1,6 @@
+{
+  "appId": "com.amarbetan.app",
+  "appName": "আমার বেতন",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

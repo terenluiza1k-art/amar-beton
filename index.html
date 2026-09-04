@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="আমার বেতন — offline salary, attendance and OT tracker">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css">
+  <title>আমার বেতন</title>
+</head>
+<body>
+<header class="topbar">
+  <div><div class="brand">✦ <span>আমার বেতন</span></div><div id="monthLabel" class="month"></div></div>
+  <button id="settingsBtn" class="iconbtn" aria-label="Settings">⚙</button>
+</header>
+
+<main>
+  <section class="hero card">
+    <div class="eyebrow">এই মাসের হিসাব</div>
+    <div id="totalIncome" class="total">৳0</div>
+    <div class="stats">
+      <div><b id="presentCount">0</b><span>উপস্থিত</span></div>
+      <div><b id="absentCount">0</b><span>অনুপস্থিত</span></div>
+      <div><b id="otTotal">0</b><span>OT ঘণ্টা</span></div>
+    </div>
+  </section>
+
+  <section class="card breakdown">
+    <h2>আয়ের বিবরণ</h2>
+    <div class="row"><span>মূল বেতন</span><b id="salaryEarned">৳0</b></div>
+    <div class="row"><span>যাতায়াত</span><b id="transportEarned">৳0</b></div>
+    <div class="row"><span>খাবার</span><b id="foodEarned">৳0</b></div>
+    <div class="row"><span>অ্যাটেনডেন্স বোনাস</span><b id="bonusEarned">৳0</b></div>
+    <div class="row"><span>OT</span><b id="otEarned">৳0</b></div>
+  </section>
+
+  <section class="card calendar-card">
+    <div class="calendar-head">
+      <button id="prevMonth" class="navbtn">‹</button>
+      <h2 id="calendarTitle"></h2>
+      <button id="nextMonth" class="navbtn">›</button>
+    </div>
+    <div class="week"><span>রবি</span><span>সোম</span><span>মঙ্গল</span><span>বুধ</span><span>বৃহঃ</span><span>শুক্র</span><span>শনি</span></div>
+    <div id="calendar" class="calendar"></div>
+  </section>
+
+  <section class="card actions">
+    <button id="slipBtn" class="primary">বেতন স্লিপ</button>
+    <button id="backupBtn">Backup</button>
+    <label class="filebtn">Restore<input id="restoreInput" type="file" accept="application/json,.json"></label>
+  </section>
+
+  <section class="card notice">
+    <b>🔔 রিমাইন্ডার:</b> <span id="reminderStatus">বন্ধ</span>
+    <small>নির্ধারিত সময়ে উপস্থিতি মার্ক করার কথা মনে করিয়ে দেবে।</small>
+  </section>
+</main>
+
+<div id="modal" class="modal hidden">
+  <div class="sheet">
+    <button class="close" id="closeModal">×</button>
+    <h2 id="modalTitle">দিনের উপস্থিতি</h2>
+    <div class="seg">
+      <button data-status="PRESENT">✓ উপস্থিত</button>
+      <button data-status="ABSENT">✗ অনুপস্থিত</button>
+    </div>
+    <label>OT ঘণ্টা<input id="otHours" type="number" min="0" step="0.5" inputmode="decimal" placeholder="0"></label>
+    <div class="hint">বর্তমান OT রেট: <b id="modalOtRate">৳50/ঘণ্টা</b></div>
+    <button id="saveDay" class="primary wide">সংরক্ষণ</button>
+    <button id="clearDay" class="danger wide">এই দিনের তথ্য মুছুন</button>
+  </div>
+</div>
+
+<div id="settingsModal" class="modal hidden">
+  <div class="sheet">
+    <button class="close" id="closeSettings">×</button>
+    <h2>Salary Settings</h2>
+    <label>মাসিক বেতন<input id="sSalary" type="number" min="0" inputmode="decimal"></label>
+    <label>মাসিক যাতায়াত ভাতা<input id="sTransport" type="number" min="0" inputmode="decimal"></label>
+    <label>মাসিক খাবার বিল<input id="sFood" type="number" min="0" inputmode="decimal"></label>
+    <label>মাসিক অ্যাটেনডেন্স বোনাস<input id="sBonus" type="number" min="0" inputmode="decimal"></label>
+    <label>OT প্রতি ঘণ্টার রেট<input id="sOtRate" type="number" min="0" inputmode="decimal"></label>
+    <div class="reminder-box">
+      <label class="check"><input id="sReminder" type="checkbox"> হাজিরা রিমাইন্ডার চালু</label>
+      <label>রিমাইন্ডার সময়<input id="sReminderTime" type="time"></label>
+    </div>
+    <button id="saveSettings" class="primary wide">Settings সংরক্ষণ</button>
+  </div>
+</div>
+
+<div id="slipModal" class="modal hidden">
+  <div class="sheet">
+    <button class="close" id="closeSlip">×</button>
+    <div id="slipContent"></div>
+    <button id="printSlip" class="primary wide">Print / Save PDF</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
